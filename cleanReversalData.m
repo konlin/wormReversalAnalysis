@@ -12,7 +12,7 @@ for k=1:num
         nexthead = reversalArray(k).WormVid(l+1).Head;
         distance = sqrt((head(1)-nexthead(1))^2 + (head(2)-nexthead(2))^2);
         if(distance > 60)
-            print('Filtering Reversal');
+            disp('Filtering Reversal');
             break;
         end
         if(l==numframes-1)
