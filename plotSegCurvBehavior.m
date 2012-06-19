@@ -1,5 +1,5 @@
 %segments worms, averages the curvature, then plots the segments over time
-function [maxs1curvature,maxs2curvature,maxs3curvature,maxs4curvature,maxs5curvature]=plotSegCurvBehavior(reversalArray)
+function [maxs1curvature,maxs2curvature,maxs3curvature,maxs4curvature,maxs5curvature]=plotSegCurvBehavior(reversalArray,string)
 %initialize segment arrays
 maxs1curvature=[];
 maxs2curvature=[];
@@ -36,8 +36,10 @@ plot(maxs2curvature,'b');
 plot(maxs3curvature,'g');
 plot(maxs4curvature,'c');
 plot(maxs5curvature,'m');
-legend('seg 1', 'seg 2', 'seg 3', 'seg 4', 'seg 5');
-title('foward motion in C.elegans');
+legend('Seg 1', 'Seg 2', 'Seg 3', 'Seg 4', 'Seg 5');
+title(string);
+ylabel('Curvature');
+xlabel('Time (in Frames)');
 
 end
 
