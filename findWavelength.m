@@ -1,7 +1,8 @@
 %For sinusoidal locomotion, finds the wavelength
 %excerpted from findPhaseShift2
 %created by Konlin Shen 6/15/12
-function [curvatureMatrix, constructedWave, wavelength]=findWavelength(mcdf_array)
+function [curvatureMatrix, constructedWave, wavelength]=findWavelength(wormReverse)
+mcdf_array=wormReverse.WormVid;
 curvdata=generateCurvature(mcdf_array)'; %percent worm body
 psWormLength=findPhaseShift(curvdata); %phase shift in percent-worm body
 totalPS = 0; %in percent worm body
@@ -52,10 +53,16 @@ stem(f,2*abs(Y(1:NFFT/2+1)), '-.');
 xlabel('Frequency (Cycles / Percent Body Length)')
 [maxVal, maxInd] = max(abs(Y));
 while(f(maxInd)==0)
-    f(maxInd)=[];
+    Y(maxInd)=[];
     [maxVal, maxInd]=max(abs(Y));
 end
+
 freq = f(maxInd) * 100 %cycle per body length
+
+text(f(maxInd), 2*maxVal,['Max=',num2str(freq)],...
+    'VerticalAlignment','Bottom',...
+	'HorizontalAlignment','Left',...
+	'FontSize',8)
 
 wavelength = 1/freq %wavelength in body length
 subplot(2,1,1);
