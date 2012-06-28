@@ -1,12 +1,15 @@
 function plotkvdk(cleanedReversalArray,mcdf)
 
-
-
 %maxs1curvature=[];
 s2curvature=[];
 s3curvature=[];
 s4curvature=[];
 s5curvature=[];
+
+seg3freq=0;
+seg4freq=0;
+seg5freq=0;
+
 
 d2=[];
 d3=[];
@@ -14,11 +17,12 @@ d4=[];
 d5=[];
 
 for k=1:length(cleanedReversalArray)
-%s1array=[];
-s2array=[];
-s3array=[];
-s4array=[];
-s5array=[];
+    %s1array=[];
+    s2array=[];
+    s3array=[];
+    s4array=[];
+    s5array=[];
+    
     firstframe=find([mcdf.FrameNumber]==cleanedReversalArray(k).WormVid(1).FrameNumber);
     if firstframe > 30
         startframe=firstframe-30;
@@ -60,16 +64,34 @@ s5array=[];
     diffSeg4=smooth(diff(s4array),2);
     diffSeg5=smooth(diff(s5array),2);
     
+    [~,maxd2index]=max(diffSeg2(30:90));
+    [~,maxd3index]=max(diffSeg3(30:90));
+    [~,maxd4index]=max(diffSeg4(30:90));
+    [~,maxd5index]=max(diffSeg5(30:90));
+    
+    [minIndex,segment]=min([maxd3index,maxd4index,maxd5index]);
+
+    if(segment==1)
+        seg3freq=seg3freq+1;
+    elseif(segment==2)
+        seg4freq=seg4freq+1;
+    elseif(segment==3)
+        seg5freq=seg5freq+1;
+    end
+    
+    smallestIndex=minIndex+30;
+    lastCurvIndex=smallestIndex+15;
+    
+    d2=[d2,max(s2array(30:lastCurvIndex))-s2array(30)];
+    d3=[d3,max(s3array(30:lastCurvIndex))-s3array(30)];
+    d4=[d4,max(s4array(30:lastCurvIndex))-s4array(30)];
+    d5=[d5,max(s5array(30:lastCurvIndex))-s5array(30)];
+    
     s2curvature=[s2curvature,s2array(30)];
     s3curvature=[s3curvature,s3array(30)];
     s4curvature=[s4curvature,s4array(30)];
     s5curvature=[s5curvature,s5array(30)];
-    
-    d2=[d2,abs(mean(diffSeg2(29:44)))];
-    d3=[d3,abs(mean(diffSeg3(29:44)))];
-    d4=[d4,abs(mean(diffSeg4(29:44)))];
-    d5=[d5,abs(mean(diffSeg5(29:44)))];
-
+  
 end
 
 figure;
@@ -78,8 +100,14 @@ hold on;
 plot(abs(s3curvature),d3,'.g');
 plot(abs(s4curvature),d4,'.c');
 plot(abs(s5curvature),d5,'.m');
+[~,pval3]=corrcoef(abs(s3curvature)',d3')
+[~,pval4]=corrcoef(abs(s4curvature)',d4')
+[~,pval5]=corrcoef(abs(s5curvature)',d5')
 xlabel('curvature');
 ylabel('change in curvature');
 legend('seg 3','seg 4', 'seg 5');
 
+figure;
+hold on;
+bar([seg3freq,seg4freq,seg5freq]);
 end
