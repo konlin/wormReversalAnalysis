@@ -10,7 +10,6 @@ seg3freq=0;
 seg4freq=0;
 seg5freq=0;
 
-
 d2=[];
 d3=[];
 d4=[];
@@ -59,35 +58,22 @@ for k=1:length(cleanedReversalArray)
     s5array=smooth(s5array);
 
     %diffSeg1=smooth(diff(s1array));
-    diffSeg2=smooth(diff(s2array),2);
-    diffSeg3=smooth(diff(s3array),2);
-    diffSeg4=smooth(diff(s4array),2);
-    diffSeg5=smooth(diff(s5array),2);
+    diffSeg2=smooth(diff(s2array),3);
+    diffSeg3=smooth(diff(s3array),3);
+    diffSeg4=smooth(diff(s4array),3);
+    diffSeg5=smooth(diff(s5array),3);
     
-    [~,maxd2index]=max(diffSeg2(30:90));
-    [~,maxd3index]=max(diffSeg3(30:90));
-    [~,maxd4index]=max(diffSeg4(30:90));
-    [~,maxd5index]=max(diffSeg5(30:90));
+    %[~,maxd2index]=max(abs(diffSeg2(30:90)));
+%     [~,maxd3index]=max(abs(diffSeg3(30:75)));
+%     [~,maxd4index]=max(abs(diffSeg4(30:75)));
+%     [~,maxd5index]=max(abs(diffSeg5(30:75)));
+%     
+    %d2=[d2,max(s2array(30:lastCurvIndex))-s2array(30)];
+    d3=[d3,mean(diffSeg3(30:75))];%s3array(maxd3index + 30)-s3array(30)];
+    d4=[d4,mean(diffSeg4(30:75))];%s4array(maxd4index + 30)-s4array(30)];
+    d5=[d5,mean(diffSeg5(30:75))];%s5array(maxd5index + 30)-s5array(30)];
     
-    [minIndex,segment]=min([maxd3index,maxd4index,maxd5index]);
-
-    if(segment==1)
-        seg3freq=seg3freq+1;
-    elseif(segment==2)
-        seg4freq=seg4freq+1;
-    elseif(segment==3)
-        seg5freq=seg5freq+1;
-    end
-    
-    smallestIndex=minIndex+30;
-    lastCurvIndex=smallestIndex+15;
-    
-    d2=[d2,max(s2array(30:lastCurvIndex))-s2array(30)];
-    d3=[d3,max(s3array(30:lastCurvIndex))-s3array(30)];
-    d4=[d4,max(s4array(30:lastCurvIndex))-s4array(30)];
-    d5=[d5,max(s5array(30:lastCurvIndex))-s5array(30)];
-    
-    s2curvature=[s2curvature,s2array(30)];
+    %s2curvature=[s2curvature,s2array(30)];
     s3curvature=[s3curvature,s3array(30)];
     s4curvature=[s4curvature,s4array(30)];
     s5curvature=[s5curvature,s5array(30)];
@@ -97,17 +83,14 @@ end
 figure;
 hold on;
 %plot(abs(s2curvature),d2,'.b');
-plot(abs(s3curvature),d3,'.g');
-plot(abs(s4curvature),d4,'.c');
-plot(abs(s5curvature),d5,'.m');
-[~,pval3]=corrcoef(abs(s3curvature)',d3')
-[~,pval4]=corrcoef(abs(s4curvature)',d4')
-[~,pval5]=corrcoef(abs(s5curvature)',d5')
+plot(s3curvature,d3,'.g');
+plot(s4curvature,d4,'.c');
+plot(s5curvature,d5,'.m');
+[~,pval3]=corrcoef(s3curvature',d3')
+[~,pval4]=corrcoef(s4curvature',d4')
+[~,pval5]=corrcoef(s5curvature',d5')
 xlabel('curvature');
 ylabel('change in curvature');
 legend('seg 3','seg 4', 'seg 5');
 
-figure;
-hold on;
-bar([seg3freq,seg4freq,seg5freq]);
 end

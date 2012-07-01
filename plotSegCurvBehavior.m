@@ -60,10 +60,10 @@ ylabel('Curvature');
 xlabel('Time (in Frames)');
 
 %diffSeg1=smooth(diff(maxs1curvature));
-diffSeg2=smooth(diff(maxs2curvature),2);
-diffSeg3=smooth(diff(maxs3curvature),2);
-diffSeg4=smooth(diff(maxs4curvature),2);
-diffSeg5=smooth(diff(maxs5curvature),2);
+diffSeg2=smooth(diff(maxs2curvature),3);
+diffSeg3=smooth(diff(maxs3curvature),3);
+diffSeg4=smooth(diff(maxs4curvature),3);
+diffSeg5=smooth(diff(maxs5curvature),3);
 
 subplot(2,1,2);
 hold on;
@@ -76,14 +76,14 @@ title('Derivative');
 ylabel('Change in Curvature');
 xlabel('Time (in Frames)');
 
-curv=generateCurvature(mcdf(firstframe));
-figure; 
-hold on; 
-plot(1:20,curv(1:20),'r'); 
-plot(21:40,curv(21:40),'b'); 
-plot(41:60,curv(41:60),'g'); 
-plot(61:80,curv(61:80),'c'); 
-plot(81:100,curv(81:100),'m');
+% curv=generateCurvature(mcdf(firstframe));
+% figure; 
+% hold on; 
+% plot(1:20,curv(1:20),'r'); 
+% plot(21:40,curv(21:40),'b'); 
+% plot(41:60,curv(41:60),'g'); 
+% plot(61:80,curv(61:80),'c'); 
+% plot(81:100,curv(81:100),'m');
 
 end
 
