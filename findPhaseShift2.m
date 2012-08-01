@@ -1,7 +1,8 @@
 %code that finds the phase shift for a given reversal
 %created by Konlin Shen 4/25/12
 function [curvatureMatrix, constructedWave, phaseShift]=findPhaseShift2(wormReverse)
-curvdata=generateCurvature(wormReverse.WormVid)'; %percent worm body
+mcdf_array=wormReverse.WormVid;
+curvdata=generateCurvature(mcdf_array)'; %percent worm body
 psWormLength=findPhaseShift(curvdata); %phase shift in percent-worm body
 totalPS = 0; %in percent worm body
 currentShift = 0; %in percent worm body
@@ -56,8 +57,19 @@ while(f(maxInd)==0)
 end
 freq = f(maxInd) * 100 %cycle per body length
 
+text(f(maxInd), 2*maxVal,['Max=',num2str(freq)],...
+    'VerticalAlignment','Bottom',...
+	'HorizontalAlignment','Left',...
+	'FontSize',8)
+
+
 wavelength = 1/freq %wavelength in body length
 totalPS
 
 phaseShift = totalPS*.01/wavelength %# of wavelengths in the phase shift
+
+subplot(2,1,1);
+hold on;
+plot(sin(freq*2*pi/100*l),'r');
+close;
 end

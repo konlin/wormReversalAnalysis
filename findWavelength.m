@@ -2,7 +2,12 @@
 %excerpted from findPhaseShift2
 %created by Konlin Shen 6/15/12
 function [curvatureMatrix, constructedWave, wavelength]=findWavelength(wormReverse)
-mcdf_array=wormReverse.WormVid;
+try
+    mcdf_array=wormReverse.WormVid;
+catch
+    disp('Not a WormReverse Object!  Treating as an Mcd_Frame Array...');
+    mcdf_array=wormReverse;
+end
 curvdata=generateCurvature(mcdf_array)'; %percent worm body
 psWormLength=findPhaseShift(curvdata); %phase shift in percent-worm body
 totalPS = 0; %in percent worm body
@@ -45,7 +50,7 @@ plot(1/Fs*l,constructedWave);
 xlabel('Percent Body Length')
 ylabel('Curvature')
 
-NFFT = 2^(nextpow2(L)); % Next power of 2 from length of y
+NFFT = 2^(nextpow2(L)+1); % Next power of 2 from length of y
 Y = fft(constructedWave,NFFT)/L; %fft(data, number of samples) n-point DFT and normalize
 f = Fs/2*linspace(0,1,NFFT/2+1);
 ax2(2)=subplot(2,1,2);
@@ -68,3 +73,4 @@ wavelength = 1/freq %wavelength in body length
 subplot(2,1,1);
 hold on;
 plot(sin(freq*2*pi/100*l),'r');
+

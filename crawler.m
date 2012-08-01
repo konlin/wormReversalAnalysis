@@ -26,6 +26,4 @@ for i=3:numel(dirInfo)
 end
 
 disp('Job Finished');
-end
-    
-          
+end         
