@@ -1,5 +1,5 @@
 %segments worms, averages the curvature, then plots the segments over time
-function [maxs1curvature,maxs2curvature,maxs3curvature,maxs4curvature,maxs5curvature]=plotSegCurvBehavior(wormReverse,mcdf)
+function [maxs1curvature,maxs2curvature,maxs3curvature,maxs4curvature,maxs5curvature]=plotSegCurvBehavior(mcdf,varargin)
 %initialize segment arrays
 maxs1curvature=[];
 maxs2curvature=[];
@@ -7,21 +7,29 @@ maxs3curvature=[];
 maxs4curvature=[];
 maxs5curvature=[];
 
+if(nargin==2 && strcmp(class(varargin{1}),'WormReverse'))
+    firstframe=find([mcdf.FrameNumber]==varargin{1}.WormVid(1).FrameNumber);
+    if firstframe > 30
+        startframe=firstframe-30;
+    else
+        startframe=firstframe;
+    end
 
-firstframe=find([mcdf.FrameNumber]==wormReverse.WormVid(1).FrameNumber);
-if firstframe > 30
-    startframe=firstframe-30;
+    if firstframe+60 < length(mcdf)
+        endframe=firstframe+60;
+    else
+        endframe=length(mcdf);
+    end
+    frames=mcdf(startframe:endframe);
+elseif(nargin==2 && strcmp(class(varargin{1}),'Mcd_Frame'))
+    v=getVelocity(varargin{1});
+    [~,reversalPoint]=min(abs(v));
+    startframe=find([mcdf.FrameNumber]==varargin{1}(reversalPoint).FrameNumber-30);
+    endframe=find([mcdf.FrameNumber]==varargin{1}(reversalPoint).FrameNumber+60);
+    frames=varargin{1};
 else
-    startframe=firstframe;
+    error('Usage: plotSegCurvBehavior(mcdf,mcdfselection) or plotSegCurvBehavior(mcdf,WormReverse)');
 end
-
-if firstframe+60 < length(mcdf)
-    endframe=firstframe+60;
-else
-    endframe=length(mcdf);
-end
-
-frames=mcdf(startframe:endframe);
 for m=1:length(frames)
     curvature=generateCurvature(frames(m));
     s1=curvature(1:20);
@@ -43,10 +51,15 @@ for m=1:length(frames)
 end
 
 %maxs1curvature=smooth(maxs1curvature);
-maxs2curvature=smooth(maxs2curvature);
+maxs2curvature=smooth(maxs2curvature);  
 maxs3curvature=smooth(maxs3curvature);
 maxs4curvature=smooth(maxs4curvature);
 maxs5curvature=smooth(maxs5curvature);
+
+
+length(startframe+30:endframe-1)
+length(maxs2curvature(31:90))
+
 
 figure;
 subplot(2,1,1);

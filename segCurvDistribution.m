@@ -1,3 +1,9 @@
+%SegCurvDistributioni takes a cleanedReversal Array and for each reversal
+%calculates the CHANGE in curvature of each segment between the time the 
+%worm stops moving (frame 1) and starts reversing (frame 2) and plots it
+%in a histogram
+%by Konlin Shen (modified 11/16/12)
+
 function [d1array,d2array,d3array,d4array,d5array]=segCurvDistribution(cleanedReversalArray)
 d1array=[];
 d2array=[];
@@ -5,7 +11,9 @@ d3array=[];
 d4array=[];
 d5array=[];
 for index=1:length(cleanedReversalArray)
+    %take the first frame of the reversal (stopped)
     mcdf1=cleanedReversalArray(index).WormVid(1);
+    %takes the second frame of the reversal (reversing)
     mcdf2=cleanedReversalArray(index).WormVid(2);
     curv1=generateCurvature(mcdf1);
     curv2=generateCurvature(mcdf2);

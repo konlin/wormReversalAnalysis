@@ -5,7 +5,7 @@ wavelengthArray=[];
 velocity=getVelocity(mcdf);
 endFlag=0;
 for i=1:length(mcdf)-1
-    while(velocity(i)<=.10)
+    while(velocity(i)<=.10 || mcdf(i).DLPisOn==1)
       try
           velocity(i+1);
           i=i+1;
@@ -26,6 +26,12 @@ for i=1:length(mcdf)-1
           [~,~,lambda]=findWavelength(mcdf_forward);
           firstFrame=i-70
           lastFrame=i
+          figure;
+          for k=1:70
+            pause(.15);
+            n=firstFrame+k;
+            imshow(strcat(pwd,'\vid',int2str(n),'.jpeg'));
+          end
           w=waitforbuttonpress
           if(w==0)
             disp('Throwing Away Wavelength!');
@@ -36,7 +42,7 @@ for i=1:length(mcdf)-1
         catch
             disp('Error!')
         end
-        close;
+        close all;
         posCounter=0;
     end
 end
