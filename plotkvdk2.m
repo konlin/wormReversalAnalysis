@@ -1,4 +1,4 @@
-function [d3,d4,d5,s3curvature,s4curvature,s5curvature]=plotkvdk2(varargin,mcdf)
+function [d3,d4,d5,s3curvature,s4curvature,s5curvature]=plotkvdk2(mcdf,varargin)
 
 %maxs1curvature=[];
 s2curvature=[];
@@ -80,6 +80,11 @@ if(nargin==2 && strcmp(class(varargin{1}),'WormReverse'))
     end
 else
     frames=varargin{1}; 
+    %s1array=[];
+    s2array=[];
+    s3array=[];
+    s4array=[];
+    s5array=[];
     for m=1:length(frames)
         curvature=generateCurvature(frames(m));
         s1=curvature(1:20); %divides the curvature into 5 segments
