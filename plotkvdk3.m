@@ -1,4 +1,4 @@
-function [d3,d4,d5,s3curvature,s4curvature,s5curvature]=plotkvdk2(mcdf,varargin)
+function [d3,d4,d5,s3curvature,s4curvature,s5curvature]=plotkvdk3(mcdf,varargin)
 
 %maxs1curvature=[];
 s2curvature=[];
@@ -119,19 +119,33 @@ else
     s3curvature=[s3curvature,s3array(1)];
     s4curvature=[s4curvature,s4array(1)];
     s5curvature=[s5curvature,s5array(1)];
+    try
+        [d3start,d3end]=findNegativeBoundaries(diffSeg3);
+        [d4start,d4end]=findNegativeBoundaries(diffSeg4);
+        [d5start,d5end]=findNegativeBoundaries(diffSeg5);
+
+        d3=[d3,mean(diffSeg3)];
+        d4=[d4,mean(diffSeg4)];
+        d5=[d5,mean(diffSeg5)];
+
+        s3curvature=[s3curvature,s3array(1)]; %save the segment curvature at the point of reversal
+        s4curvature=[s4curvature,s4array(1)];
+        s5curvature=[s5curvature,s5array(1)];
+    catch
+    end
 end
 
-figure;
-hold on;
-%plot(abs(s2curvature),d2,'.b');
-plot(s3curvature,d3,'dg');  %plot and calculate correlation
-plot(s4curvature,d4,'dc');
-plot(s5curvature,d5,'dm');
-[~,pval3]=corrcoef(s3curvature',d3')
-[~,pval4]=corrcoef(s4curvature',d4')
-[~,pval5]=corrcoef(s5curvature',d5')
-xlabel('curvature');
-ylabel('change in curvature');
-legend('seg 3','seg 4', 'seg 5');
+% figure;
+% hold on;
+% %plot(abs(s2curvature),d2,'.b');
+% plot(s3curvature,d3,'dg');  %plot and calculate correlation
+% plot(s4curvature,d4,'dc');
+% plot(s5curvature,d5,'dm');
+% [~,pval3]=corrcoef(s3curvature',d3')
+% [~,pval4]=corrcoef(s4curvature',d4')
+% [~,pval5]=corrcoef(s5curvature',d5')
+% xlabel('curvature');
+% ylabel('change in curvature');
+% legend('seg 3','seg 4', 'seg 5');
 
 end
