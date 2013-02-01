@@ -1,4 +1,4 @@
-function [d3,d4,d5,s3curvature,s4curvature,s5curvature]=plotkvdk3(mcdf,varargin)
+    function [d3,d4,d5,s3curvature,s4curvature,s5curvature]=plotkvdk3(mcdf,varargin)
 
 %maxs1curvature=[];
 s2curvature=[];
@@ -14,6 +14,9 @@ d2=[];
 d3=[];
 d4=[];
 d5=[];
+
+exceptionCounter=0;
+
 if(nargin==2 && strcmp(class(varargin{1}),'WormReverse'))
     for k=1:length(varargin{1})
         %s1array=[];
@@ -22,7 +25,7 @@ if(nargin==2 && strcmp(class(varargin{1}),'WormReverse'))
         s4array=[];
         s5array=[];
 
-        firstframe=find([mcdf.FrameNumber]==cleanedReversalArray(k).WormVid(1).FrameNumber); %finds a reversal
+        firstframe=find([mcdf.FrameNumber]==varargin{1}(k).WormVid(1).FrameNumber); %finds a reversal
         if firstframe > 30 %pads beginning of reversal with 30 frames (unless it cannot)
             startframe=firstframe-30;
         else
@@ -75,8 +78,21 @@ if(nargin==2 && strcmp(class(varargin{1}),'WormReverse'))
             s4curvature=[s4curvature,s4array(30)];
             s5curvature=[s5curvature,s5array(30)];
         catch
+            exceptionCounter=exceptionCounter+1;
         end
     end
+    figure;
+    hold on;
+    %plot(abs(s2curvature),d2,'.b');
+    plot(s3curvature,d3,'dg');  %plot and calculate correlation
+    plot(s4curvature,d4,'dc');
+    plot(s5curvature,d5,'dm');
+    [~,pval3]=corrcoef(s3curvature',d3')
+    [~,pval4]=corrcoef(s4curvature',d4')
+    [~,pval5]=corrcoef(s5curvature',d5')
+    xlabel('curvature');
+    ylabel('change in curvature');
+    legend('seg 3','seg 4', 'seg 5');
 else
     frames=varargin{1}; 
     %s1array=[];
@@ -110,15 +126,6 @@ else
     diffSeg3=smooth(diff(s3array),3);
     diffSeg4=smooth(diff(s4array),3);
     diffSeg5=smooth(diff(s5array),3);
-
-   
-    d3=[d3,mean(diffSeg3)];
-    d4=[d4,mean(diffSeg4)];
-    d5=[d5,mean(diffSeg5)];
-
-    s3curvature=[s3curvature,s3array(1)];
-    s4curvature=[s4curvature,s4array(1)];
-    s5curvature=[s5curvature,s5array(1)];
     try
         [d3start,d3end]=findNegativeBoundaries(diffSeg3);
         [d4start,d4end]=findNegativeBoundaries(diffSeg4);
@@ -132,20 +139,8 @@ else
         s4curvature=[s4curvature,s4array(1)];
         s5curvature=[s5curvature,s5array(1)];
     catch
+        exceptionCounter=exceptionCounter+1;
     end
 end
-
-% figure;
-% hold on;
-% %plot(abs(s2curvature),d2,'.b');
-% plot(s3curvature,d3,'dg');  %plot and calculate correlation
-% plot(s4curvature,d4,'dc');
-% plot(s5curvature,d5,'dm');
-% [~,pval3]=corrcoef(s3curvature',d3')
-% [~,pval4]=corrcoef(s4curvature',d4')
-% [~,pval5]=corrcoef(s5curvature',d5')
-% xlabel('curvature');
-% ylabel('change in curvature');
-% legend('seg 3','seg 4', 'seg 5');
-
+disp('Number of exceptions thrown:'+ num2str(exceptionCounter));
 end

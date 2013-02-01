@@ -15,7 +15,8 @@ for k=1:numFrames-1
         disp('found end of reversal');
         endReversalIndex=k;
         reversal=false;
-        reversalList(j)=wormReverse(startReversalIndex, endReversalIndex, mcdf, options)
+        reversalList(j)=wormReverse(startReversalIndex, endReversalIndex, mcdf,...
+            options,endReversalIndex-startReversalIndex)
         j=j+1;
     end
 end

@@ -12,13 +12,20 @@ dt2=dlist(2:dn);
 dprod=dt1.* dt2; %multiply consecutive derivative elements together
 
 %finds the first frame where the worm starts reversing
+count=0;
 for i=1:dn-1
-    ind=0;
-    count=0;
-    if(dprod(i)<0 && prod(i)>0.02) %If the worm changes direction with a velocity above a certain value
+    prod(i)
+    if(dprod(i)<0 && prod(i)>0.02)%If the worm changes direction with a velocity above a certain value
+        disp('Found reversal');
         ind=i;
         break; %when you find the reversal, stop searching!
     end
+    count=count+1;
+end
+
+if(count==dn-1)
+    disp('Throwing exception');
+    throw(exception);
 end
 
 

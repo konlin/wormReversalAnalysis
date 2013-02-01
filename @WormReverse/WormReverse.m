@@ -25,11 +25,22 @@ classdef WormReverse
         function wrobj=setPhaseChangePi(wrobj,newPhase)
             wrobj.phaseChangePi=newPhase;
         end
+        
+        %gets current timeDuration
+        function time=getTimeDuration(wrobj)
+            time=wrobj.timeDuration;
+        end
+        
+        %set timeDuration
+        function wrobj=setTimeDuration(wrobj,time)
+            wrobj.timeDuration=time;
+        end
+        
     end
     
     methods
         %constructor
-        function wrobj=WormReverse(startframe, endframe, mcdf, options)
+        function wrobj=WormReverse(startframe, endframe, mcdf, options, length)
           wrobj.WormVid=mcdf(startframe:endframe);
           numFrames=endframe-startframe+1;
           for(k=1:numFrames)
@@ -42,6 +53,7 @@ classdef WormReverse
           unwrappedPhaseArray=unwrap(phaseArray);
           wrobj.phaseChange=unwrappedPhaseArray(numFrames)-unwrappedPhaseArray(1);
           wrobj.phaseChangePi=wrobj.phaseChange/pi;
+          wrobj.timeDuration=length;
         end
     end
 end
