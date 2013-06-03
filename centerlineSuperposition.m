@@ -29,6 +29,17 @@ for j=1:100
   centerline(j,2)=centerline(j,2)-translateY;
 end
 
+%normalize for wormlength by summing over the distances between adjacent
+%points on the centerline
+totalLength=0;
+for k=1:99
+    ds=sqrt((centerline(k,1)-centerline(k+1,1))^2+...
+        (centerline(k,2)-centerline(k+1,2))^2);
+    totalLength=totalLength+ds;
+end
+
+centerline=centerline./totalLength;
+
 %rotates the centerline such that the head-tail vector is (1,0)
 htVector=[centerline(1,1)-centerline(100,1)...
     centerline(1,2)-centerline(100,2)];
