@@ -1,4 +1,5 @@
 %Superimposes all the centerlines on top of each other
+%Konlin Shen
 %5/20/13
 
 function centerlineSuperposition(cra)
