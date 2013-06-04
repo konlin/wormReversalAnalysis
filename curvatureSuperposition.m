@@ -31,9 +31,10 @@ end
 title('Superposition of Worm Curvatures Prior to Reversing');
 
 %plot histograms for all the segments
+figure;
 for segIndex=1:5
-    figure;
-    hist(segArrays(segIndex,:),25);
+    subplot(3,2,segIndex);
+    hist(segArrays(segIndex,:),30);
     titleStr=sprintf('Histogram of Average Curvature for Segment %d',segIndex);
     title(titleStr);
 end
