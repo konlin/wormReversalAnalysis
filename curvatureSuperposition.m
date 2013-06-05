@@ -12,21 +12,24 @@ for i=1:size
     frame=cra(i).WormVid(1);
     curvature=generateCurvature(frame);
     
-    %calculate average curvature per segment
-    seg1=mean(curvature(1:20));
-    seg2=mean(curvature(21:40));
-    seg3=mean(curvature(41:60));
-    seg4=mean(curvature(61:80));
-    seg5=mean(curvature(81:100));
+    plotFlag=true;
     
-    %collect the average curvatures
-    segArrays(1,i)=seg1;
-    segArrays(2,i)=seg2;
-    segArrays(3,i)=seg3;
-    segArrays(4,i)=seg4;
-    segArrays(5,i)=seg5;
+    for j=1:5
+        %calculate average curvature for each segment
+        segMax=max(abs(curvature((j-1)*10+1:j*20)));
+        if(segMax<10)
+            %collect the average curvatures
+            seg=mean(curvature((j-1)*10+1:j*20));
+            segArrays(j,i)=seg;
+        else
+            plotFlag=false;
+            break;
+        end
+    end
     
-    plot(curvature);
+    if(plotFlag==true)
+        plot(curvature);
+    end
 end
 title('Superposition of Worm Curvatures Prior to Reversing');
 
