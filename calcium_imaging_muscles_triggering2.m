@@ -3,7 +3,7 @@
 % %minor modifications by Konlin Shen 06/04/13
 % %March 2013
 
-function calcium_imaging_Muscles_triggering2(varargin)
+function curvdatafiltered=calcium_imaging_Muscles_triggering2(varargin)
 
     button = length(questdlg('Load new data?','','Yes (TIF)','Yes (MAT) ','No', 'Yes (TIF)') ) ;
 
@@ -574,10 +574,8 @@ function calcium_imaging_Muscles_triggering2(varargin)
     ventral_brightness_data_filtered = imfilter(ventral_brightness_data, h, 'replicate');
     dorsal_brightness_data_filtered = imfilter(dorsal_brightness_data, h, 'replicate');
 
-
+    %plot the curvature diagram
     figure; 
-    
-    subplot(1,3,1);
     imagesc(curvdatafiltered(:,:)); colormap(cmap); colorbar; caxis([-10 10]);
 
     title('cuvature diagram');
@@ -592,9 +590,16 @@ function calcium_imaging_Muscles_triggering2(varargin)
 
     xlabel('fractional distance along the centerline (head=0; tail=1)');
     ylabel('time (s)');
-
-
-    subplot(1,3,2); 
+    m=msgbox('Please select origin of reversal');
+    uiwait(m);
+    [~,revY]=ginput(1)
+    hold on;
+    plot(1:100, revY, 'LineWidth', 8, 'Color', 'g', 'LineStyle','-');
+    hold off;
+    
+    %plot the GC3/RFP ratios
+    figure;
+    subplot(1,2,1); 
     imagesc(ventral_brightness_data_filtered(:,:)); colormap(jet); colorbar; %caxis([3 15]);
 
     title('ventral ratio GC3/RFP');
@@ -607,8 +612,11 @@ function calcium_imaging_Muscles_triggering2(varargin)
 
     xlabel('fractional distance along the centerline (head=0; tail=1)');
     ylabel('time (s)');
+    
+    hold on;
+    plot(1:100, revY, 'LineWidth', 8, 'Color', 'm', 'LineStyle','-');
 
-    subplot(1,3,3); 
+    subplot(1,2,2); 
     imagesc(dorsal_brightness_data_filtered(:,:)); colormap(jet); colorbar; %caxis([3 15]);
 
     title('dorsal ratio GC3/RFP');
@@ -620,7 +628,10 @@ function calcium_imaging_Muscles_triggering2(varargin)
     set(gca,'YTICKLABEL',(y_tick-1)/fps);
 
     xlabel('fractional distance along the centerline (head=0; tail=1)');
-    ylabel('time (s)');
+    ylabel('time (s)'); 
+    
+    hold on;
+    plot(1:100, revY, 'LineWidth', 8, 'Color', 'm', 'LineStyle','-');
 
     if length(questdlg('Save this data? '))==3
         [fn savepathname]= uiputfile('*.mat', 'choose file to save', strcat(fname, '_',num2str(istart),'-',num2str(iend),'.mat'));
