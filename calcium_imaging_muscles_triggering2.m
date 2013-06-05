@@ -598,9 +598,22 @@ function curvdatafiltered=calcium_imaging_Muscles_triggering2(varargin)
     hold off;
     
     %plot the GC3/RFP ratios
+    %first determine bounds for scaling
+    maxVentral=max(max(ventral_brightness_data_filtered))
+    maxDorsal=max(max(dorsal_brightness_data_filtered))
+    
+    if(maxVentral>maxDorsal)
+        colorMax=maxVentral;
+    else
+        colorMax=maxDorsal;
+    end
+    
+    clims=[0 colorMax];
+    
     figure;
     subplot(1,2,1); 
-    imagesc(ventral_brightness_data_filtered(:,:)); colormap(jet); colorbar; %caxis([3 15]);
+    imagesc(ventral_brightness_data_filtered(:,:), clims); 
+    colormap(jet); colorbar; %caxis([0 colorMax]);
 
     title('ventral ratio GC3/RFP');
     set(gca,'XTICK',[1 20 40 60 80 100]);
@@ -617,7 +630,8 @@ function curvdatafiltered=calcium_imaging_Muscles_triggering2(varargin)
     plot(1:100, revY, 'LineWidth', 8, 'Color', 'm', 'LineStyle','-');
 
     subplot(1,2,2); 
-    imagesc(dorsal_brightness_data_filtered(:,:)); colormap(jet); colorbar; %caxis([3 15]);
+    imagesc(dorsal_brightness_data_filtered(:,:), clims); 
+    colormap(jet); colorbar; %caxis([0 colorMax]);
 
     title('dorsal ratio GC3/RFP');
     set(gca,'XTICK',[1 20 40 60 80 100]);
