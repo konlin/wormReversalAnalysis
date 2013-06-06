@@ -3,20 +3,20 @@
 % %minor modifications by Konlin Shen 06/04/13
 % %March 2013
 
-function curvdatafiltered=calcium_imaging_Muscles_triggering2(varargin)
-
+function [ventral_brightness_data_filtered, dorsal_brightness_data_filtered...
+    ,curvdatafiltered]=calcium_imaging_muscles_triggering2(varargin)
+    
     button = length(questdlg('Load new data?','','Yes (TIF)','Yes (MAT) ','No', 'Yes (TIF)') ) ;
-
+    
     if button == 10
         [filename,pathname]  = uigetfile({'*.mat'});
         load([pathname filename]);
     elseif button == 9
-
-
+    
     do_dialog = 1;
-
+    
     if do_dialog
-
+    
         if exist('pathname', 'var')
             try
                 if isdir(pathname)
@@ -64,16 +64,13 @@ function curvdatafiltered=calcium_imaging_Muscles_triggering2(varargin)
     numframes = iend - istart + 1; %number of frames analyzed
 
 
-
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+    %%%%%%%%%%%%%%%%%%%%%%%%%%INITIALIZATIONS%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     numcurvpts = 100;
     corr_pts_all = zeros(numframes, numcurvpts, 6);
     curvdata = zeros(numframes,numcurvpts);
     angle_data =zeros(numframes, numcurvpts+1);
     ventral_brightness_data = zeros(numframes,numcurvpts);
-    dorsal_brightness_data = zeros(numframes,numcurvpts);
+    dorsal_brightness_data = zeros(numframes,numcurvpts);   
     vulva_indices = zeros(numframes,1);
     boundary_segment1=zeros(numframes,1);
     boundary_segment2=zeros(numframes,1);
@@ -84,17 +81,14 @@ function curvdatafiltered=calcium_imaging_Muscles_triggering2(varargin)
     %%%%% MAIN CALCULATIONS %%%%%
 
     for j=1:numframes
-
-
+        
         if do_multitif
-
-
+            
             rb = imread(fname, 2*j-1+2*(istart-1), 'Info', info); %read multiple tif files and green channel
             c = imread(fname, 2*j+2*(istart-1), 'Info', info); %read red channel
 
-
         else
-
+            
             if (j+istart-1 > 9999)
                 constr = '%05d';
             else
@@ -109,7 +103,6 @@ function curvdatafiltered=calcium_imaging_Muscles_triggering2(varargin)
 
             fname2=strcat(pathname, filename(1:length(filename)-num_digits-6), frame_index, 'c2','.tif');
             c=imread(fname2);
-
 
         end
 
@@ -253,8 +246,6 @@ function curvdatafiltered=calcium_imaging_Muscles_triggering2(varargin)
 
         B1_angle = unwrap(angle(cBB ./ cAA));
 
-
-
         min1 = find(B1_angle == min(B1_angle),1); % find point on boundary w/ minimum angle between AA, BB
         B1_angle2 = circshift(B1_angle, -min1);
         min2a = round(.25*B1_size)-1+find(B1_angle2(round(.25*B1_size):round(0.75*B1_size))==min(B1_angle2(round(.25*B1_size):round(0.75*B1_size))),1);  % find minimum in other half
@@ -343,7 +334,6 @@ function curvdatafiltered=calcium_imaging_Muscles_triggering2(varargin)
         %d_p=csaps(dorsal(:,2),dorsal(:,1),spline_p);
         %v_p=csaps(ventral(:,2),ventral(:,1),spline_p);
 
-
         plot(path1(:,2),path1(:,1),'-k'); hold on;
         plot(path2(:,2),path2(:,1),'-k'); hold on;
         plot(midline_mixed(:,2),midline_mixed(:,1), '-k');
@@ -358,8 +348,6 @@ function curvdatafiltered=calcium_imaging_Muscles_triggering2(varargin)
         d_path = spline_line( dorsal,spline_p,2*numcurvpts);
 
         v_path = spline_line( ventral,spline_p,2*numcurvpts);
-
-
 
         segment_len=splen(end)/path_length;
 
@@ -394,7 +382,6 @@ function curvdatafiltered=calcium_imaging_Muscles_triggering2(varargin)
             start_pt_v=max(1,round((i-20)/path_length*lv));
             end_pt_v=min(round((i+20)/path_length*lv),lv);
 
-
             %vector_midline=(line(min(i+1,path_length),:)-line(max(i-1,1),:))/norm((line(min(i+1,path_length),:)-line(max(i-1,1),:)));
             %d_d=zeros(end_pt_d-start_pt_d+1,1);
             %d_v=zeros(end_pt_v-start_pt_v+1,1);
@@ -417,7 +404,6 @@ function curvdatafiltered=calcium_imaging_Muscles_triggering2(varargin)
 
             hold on; plot([d_path(I_d,1),v_path(I_v,1)],[d_path(I_d,2),v_path(I_v,2)],'-w','linewidth',0.5);
 
-
             corr_pts(i, 1:2) = line(i,:);                     % makes a matrix of corresponding points on midline, ventral line, and dorsal line
             corr_pts(i, 3:4) = d_path(I_d,:);                 % column 1:2 = midline (x,y)    column 3:4 = dorsal(x,y)    column 5:6 = ventral(x,y)
             corr_pts(i, 5:6) = v_path(I_v,:);
@@ -432,7 +418,6 @@ function curvdatafiltered=calcium_imaging_Muscles_triggering2(varargin)
 
                 corner1_v=(1-f_v)*corr_pts(i,5:6)+f_v*corr_pts(i,1:2);
                 corner2_v=(1-f_v)*corr_pts(i-2,5:6)+f_v*corr_pts(i-2,1:2);
-
 
                 C_d=[corner1_d(1) corner2_d(1) corr_pts(i-2,3) corr_pts(i,3) corner1_d(1)];
                 R_d=[corner1_d(2) corner2_d(2) corr_pts(i-2,4) corr_pts(i,4) corner1_d(2)];
@@ -456,17 +441,15 @@ function curvdatafiltered=calcium_imaging_Muscles_triggering2(varargin)
                  if isnan(corr_data(i-1,2))||isnan(corr_data(i-1,3))
                      brows(end+1)=j;
                  end
-
-            end                                       %column 2 = dorsal brightness         column 3 = ventral brightness
-
+            end
+            
+            %column 2 = dorsal brightness         column 3 = ventral brightness
 
             %range=max((d_norm_min+v_norm_min)/3,mt); %define a region to calculate the brightness
 
             % create windows on dorsal and ventral side, to look up brightness values
             %I_d_x_window = max(1,ceil(d_path(I_d,1)-range)):min(Xmax,round(d_path(I_d,1)+range));
             %I_v_x_window = max(1,ceil(v_path(I_v,1)-range)):min(Xmax,round(v_path(I_v,1)+range));
-
-
 
             %I_d_y_window = max(1,ceil(d_path(I_d,2)-range)):min(Ymax,round(d_path(I_d,2)+range));
             %I_v_y_window =  max(1,ceil(v_path(I_v,2)-range)):min(Ymax,round(v_path(I_v,2)+range));
@@ -476,8 +459,6 @@ function curvdatafiltered=calcium_imaging_Muscles_triggering2(varargin)
 
             %bw_d=bw(I_d_y_window,I_d_x_window);
             %bw_v=bw(I_v_y_window,I_v_x_window);
-
-
         end
 
         corr_data(end,2:3)=corr_data(end-1,2:3);
@@ -506,7 +487,7 @@ function curvdatafiltered=calcium_imaging_Muscles_triggering2(varargin)
     cmap(:,3)=cmap(:,2);
     cmap(:,2)=0;
 
-    figure(3); clf; 
+    figure; clf; 
         imagesc(curvdata(:,:)*100); colormap(cmap); caxis([-10,10]);
 
       %imagesc(dorsal_brightness_data_filtered(:,:)); colormap(jet); colorbar; caxis([0.8 5]);
@@ -561,7 +542,8 @@ function curvdatafiltered=calcium_imaging_Muscles_triggering2(varargin)
 
              end
          end
-
+         
+    close;
 
     %%%%%running average of curvature, brightness%%%%%%%
 
@@ -592,15 +574,15 @@ function curvdatafiltered=calcium_imaging_Muscles_triggering2(varargin)
     ylabel('time (s)');
     m=msgbox('Please select origin of reversal');
     uiwait(m);
-    [~,revY]=ginput(1)
+    [~,revY]=ginput(1);
     hold on;
     plot(1:100, revY, 'LineWidth', 8, 'Color', 'g', 'LineStyle','-');
     hold off;
     
     %plot the GC3/RFP ratios
     %first determine bounds for scaling
-    maxVentral=max(max(ventral_brightness_data_filtered))
-    maxDorsal=max(max(dorsal_brightness_data_filtered))
+    maxVentral=max(max(ventral_brightness_data_filtered));
+    maxDorsal=max(max(dorsal_brightness_data_filtered));
     
     if(maxVentral>maxDorsal)
         colorMax=maxVentral;
@@ -610,6 +592,7 @@ function curvdatafiltered=calcium_imaging_Muscles_triggering2(varargin)
     
     clims=[0 colorMax];
     
+    %now plot ratios using the same colorbar scale
     figure;
     subplot(1,2,1); 
     imagesc(ventral_brightness_data_filtered(:,:), clims); 
