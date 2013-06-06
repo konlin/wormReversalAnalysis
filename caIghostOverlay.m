@@ -54,9 +54,11 @@ while(sat==false)
         dboundary=dbnd(n+1:end,:);
         dbCell{k}=dboundary;
         hold on;
-        plot(dboundary(:,2), dboundary(:,1), 'w', 'LineWidth', 2)
+        plot(dboundary(:,2), dboundary(:,1), 'w', 'LineWidth', 3)
     end
-
+    drawnow;
+    waitforbuttonpress;
+    
     figure;
     imagesc(ventralcolormap);colormap('jet');colorbar;
     title('Ventral Brightness Ratio');
@@ -72,8 +74,9 @@ while(sat==false)
         vboundary=vbnd(n+1:end,:);
         vbCell{k}=vboundary;
         hold on;
-        plot(vboundary(:,2), vboundary(:,1), 'w', 'LineWidth', 2)
+        plot(vboundary(:,2), vboundary(:,1), 'w', 'LineWidth', 3)
     end
+    drawnow;
     
     button=questdlg('Satisfactory?');
     if(strcmp(button,'Yes'))
@@ -81,6 +84,7 @@ while(sat==false)
     else
         newAns=inputdlg({'Set Threshold'});
         threshold=str2double(newAns{1});
+        close; close;
     end
 end
 
