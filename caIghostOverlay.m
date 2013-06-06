@@ -22,9 +22,6 @@ close;
 
 threshold=str2double(answer{1});
 flipToggle=str2num(answer{2});
-if(flipToggle==1)
-    threshold=1-threshold;
-end
 
 sat=false;
 
@@ -39,7 +36,7 @@ while(sat==false)
     end
 
     %use masks to find boundaries
-    figure;
+    dhandle=figure;
     imagesc(dorsalcolormap);colormap('jet');colorbar;
     title('Dorsal Brightness Ratio');
     dbndries=bwboundaries(dMask,'noholes');
@@ -59,7 +56,7 @@ while(sat==false)
     drawnow;
     waitforbuttonpress;
     
-    figure;
+    vhandle=figure;
     imagesc(ventralcolormap);colormap('jet');colorbar;
     title('Ventral Brightness Ratio');
     vbndries=bwboundaries(vMask,'noholes');
@@ -84,7 +81,7 @@ while(sat==false)
     else
         newAns=inputdlg({'Set Threshold'});
         threshold=str2double(newAns{1});
-        close; close;
+        close(dhandle); close(vhandle);
     end
 end
 
