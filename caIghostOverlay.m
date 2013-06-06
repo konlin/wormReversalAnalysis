@@ -11,49 +11,77 @@ imwrite(ventral_brightness_filtered, 'ventralcolormap.jpg');
 dorsalcolormap=imread('dorsalcolormap.jpg');
 ventralcolormap=imread('ventralcolormap.jpg');
 
-%create masks from binary image
-threshold=0.7;
-
-dMask=im2bw(dorsalcolormap, threshold);
-vMask=im2bw(ventralcolormap, threshold);
-
-%use masks to find boundaries
 figure;
-imagesc(dorsalcolormap);
-title('Dorsal Brightness Ratio');
-dbndries=bwboundaries(dMask,'noholes');
-dbndry=zeros(1,2);
-for k=1:length(dbndries)
-    dbndry=dbndries{k};
-    n=size(dbndry,1);
-    filt=normpdf((1:n),n/2,.01*n);
-    filt=filt/sum(filt);
-    dbndry=[dbndry;dbndry(1:n,:)];
-    dbnd=filter(filt,1,dbndry);
-    dboundary=dbnd(n+1:end,:);
-    dbCell{k}=dboundary;
-    hold on;
-    plot(dboundary(:,2), dboundary(:,1), 'w', 'LineWidth', 2)
+subplot(2,1,1);
+imshow(dorsalcolormap);
+subplot(2,1,2);
+imshow(ventralcolormap);
 
+answer=inputdlg({'Set Threshold', 'white background?'});
+close;
+
+threshold=str2double(answer{1});
+flipToggle=str2num(answer{2});
+if(flipToggle==1)
+    threshold=1-threshold;
 end
 
-figure;
-imagesc(ventralcolormap);
-title('Ventral Brightness Ratio');
-vbndries=bwboundaries(vMask,'noholes');
-vbndry=zeros(1,2);
-for k=1:length(vbndries)
-    vbndry=vbndries{k};
-    n=size(vbndry,1);
-    filt=normpdf((1:n),n/2,.01*n);
-    filt=filt/sum(filt);
-    vbndry=[vbndry;vbndry(1:n,:)];
-    vbnd=filter(filt,1,vbndry);
-    vboundary=vbnd(n+1:end,:);
-    vbCell{k}=vboundary;
-    hold on;
-    plot(vboundary(:,2), vboundary(:,1), 'w', 'LineWidth', 2)
+sat=false;
 
+while(sat==false)
+    %create masks from binary image
+    dMask=im2bw(dorsalcolormap, threshold);
+    vMask=im2bw(ventralcolormap, threshold);
+
+    if(flipToggle==1)
+        dMask=(ones(size(dMask))-dMask);
+        vMask=(ones(size(vMask))-vMask);
+    end
+
+    %use masks to find boundaries
+    figure;
+    imagesc(dorsalcolormap);colormap('jet');colorbar;
+    title('Dorsal Brightness Ratio');
+    dbndries=bwboundaries(dMask,'noholes');
+    dbndry=zeros(1,2);
+    for k=1:length(dbndries)
+        dbndry=dbndries{k};
+        n=size(dbndry,1);
+        filt=normpdf((1:n),n/2,.01*n);
+        filt=filt/sum(filt);
+        dbndry=[dbndry;dbndry(1:n,:)];
+        dbnd=filter(filt,1,dbndry);
+        dboundary=dbnd(n+1:end,:);
+        dbCell{k}=dboundary;
+        hold on;
+        plot(dboundary(:,2), dboundary(:,1), 'w', 'LineWidth', 2)
+    end
+
+    figure;
+    imagesc(ventralcolormap);colormap('jet');colorbar;
+    title('Ventral Brightness Ratio');
+    vbndries=bwboundaries(vMask,'noholes');
+    vbndry=zeros(1,2);
+    for k=1:length(vbndries)
+        vbndry=vbndries{k};
+        n=size(vbndry,1);
+        filt=normpdf((1:n),n/2,.01*n);
+        filt=filt/sum(filt);
+        vbndry=[vbndry;vbndry(1:n,:)];
+        vbnd=filter(filt,1,vbndry);
+        vboundary=vbnd(n+1:end,:);
+        vbCell{k}=vboundary;
+        hold on;
+        plot(vboundary(:,2), vboundary(:,1), 'w', 'LineWidth', 2)
+    end
+    
+    button=questdlg('Satisfactory?');
+    if(strcmp(button,'Yes'))
+        sat=true;
+    else
+        newAns=inputdlg({'Set Threshold'});
+        threshold=str2double(newAns{1});
+    end
 end
 
 %overlay boundaries
