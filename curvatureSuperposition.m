@@ -6,6 +6,7 @@ function [segArrays,curvatures]=curvatureSuperposition(cra)
 size=length(cra);
 segArrays=zeros(5,size);
 curvatures=[];
+peaknumbers=[];
 figure;
 hold all;
 
@@ -15,12 +16,17 @@ for i=1:size
     
     plotFlag=true;
     
+    if((curvature(5)-curvature(10))/(5-10)<0)
+        curvature=-1*curvature;
+    end
+    
+    curvature=curvature+2*pi;
     for j=1:5
         %calculate average curvature for each segment
         segMax=max(abs(curvature((j-1)*10+1:j*20)));
         
         %filter out curvatures which make no sense
-        if(segMax<2*pi)
+        if(segMax<4*pi)
             %collect the average curvatures
             seg=mean(curvature((j-1)*10+1:j*20));
             segArrays(j,i)=seg;
@@ -32,6 +38,8 @@ for i=1:size
     
     if(plotFlag==true)
         curvatures=[curvatures; curvature'];
+        temppeak=findpeaks(abs(curvature))
+        peaknumbers=[peaknumbers,length(temppeak)];
         plot(curvature);
     end
 end
@@ -48,5 +56,10 @@ for segIndex=1:5
     titleStr=sprintf('Histogram of Average Curvature for Segment %d',segIndex);
     title(titleStr);
 end
+
+%plot histogram for peak number
+figure;
+hist(peaknumbers);
+title('histogram of maxes/mins');
 
 end
