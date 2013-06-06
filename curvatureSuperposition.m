@@ -17,7 +17,9 @@ for i=1:size
     for j=1:5
         %calculate average curvature for each segment
         segMax=max(abs(curvature((j-1)*10+1:j*20)));
-        if(segMax<10)
+        
+        %filter out curvatures which make no sense
+        if(segMax<2*pi)
             %collect the average curvatures
             seg=mean(curvature((j-1)*10+1:j*20));
             segArrays(j,i)=seg;
