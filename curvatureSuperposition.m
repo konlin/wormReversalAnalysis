@@ -2,9 +2,10 @@
 %Konlin Shen
 %6/4/13
 
-function curvatureSuperposition(cra)
+function [segArrays,curvatures]=curvatureSuperposition(cra)
 size=length(cra);
 segArrays=zeros(5,size);
+curvatures=[];
 figure;
 hold all;
 
@@ -30,10 +31,14 @@ for i=1:size
     end
     
     if(plotFlag==true)
+        curvatures=[curvatures; curvature'];
         plot(curvature);
     end
 end
 title('Superposition of Worm Curvatures Prior to Reversing');
+
+averageCurvature=mean(curvatures);
+plot(averageCurvature,'LineWidth',4,'color','r');
 
 %plot histograms for all the segments
 figure;
