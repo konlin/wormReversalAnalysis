@@ -2,18 +2,13 @@
 %Konlin Shen
 %6/4/13
 
-function [segArrays,curvatures,peaknumbers]=curvatureSuperposition(cra)
+function [segArrays,curvatures,peaknumbers,curvatureCell]=curvatureSuperposition(cra)
 craSize=length(cra);
 segArrays=zeros(5,craSize);
 curvatures=[];
+curvatureCell={};
 peaknumbers=[];
-onepeakcurvatures=[];
-twopeakcurvatures=[];
-threepeakcurvatures=[];
-fourpeakcurvatures=[];
-fivepeakcurvatures=[];
-sixpeakcurvatures=[];
-sevenpeakcurvatures=[];
+
 figure;
 hold all;
 
@@ -23,6 +18,7 @@ for i=1:craSize
     
     plotFlag=true;
     
+    %if the head curvature is negative, flip it for normalization
     if((curvature(5)-curvature(10))/(5-10)<0)
         curvature=-1*curvature;
     end
@@ -44,25 +40,15 @@ for i=1:craSize
     
     if(plotFlag==true)
         temppeak=findpeaks(abs(curvature));
-        peaknumbers=[peaknumbers,length(temppeak)];
+        numpeaks=numel(temppeak);
+        peaknumbers=[peaknumbers,numpeaks];
         curvatures=[curvatures; curvature'];
         
-        switch length(temppeak)
-            case 1
-                onepeakcurvatures=[onepeakcurvatures; curvature'];
-            case 2
-                twopeakcurvatures=[twopeakcurvatures; curvature'];
-            case 3
-                threepeakcurvatures=[threepeakcurvatures; curvature'];
-            case 4
-                fourpeakcurvatures=[fourpeakcurvatures; curvature'];
-            case 5
-                fivepeakcurvatures=[fivepeakcurvatures; curvature'];
-            case 6
-                sixpeakcurvatures=[sixpeakcurvatures; curvature'];
-            case 7
-                sevenpeakcurvatures=[sevenpeakcurvatures; curvature'];                
+        if(numel(curvatureCell)<numpeaks)
+            curvatureCell{numpeaks}=[];
         end
+        
+        curvatureCell{numpeaks}=[curvatureCell{numpeaks};curvature'];
         
         plot(curvature);
     end
@@ -86,54 +72,22 @@ figure;
 hist(peaknumbers);
 title('histogram of maxes/mins');
 
-%plot curvature superpositions for various postures:
-figure;
-hold on;
-for k=1:size(onepeakcurvatures,1)
-    plot(1:100, onepeakcurvatures(k,:));
-end
-title('One Peak Curvature Superposition');
+for i=1:numel(curvatureCell)
+    postureCurvatures=curvatureCell{i};
+    pCurvSize=size(postureCurvatures,1);
+    if(pCurvSize>0)
+        figure;
+        hold on;
+        
+        for k=1:pCurvSize
+            plot(postureCurvatures(k,:));
+        end
 
-figure;
-hold on;
-for k=1:size(twopeakcurvatures,1)
-    plot(1:100, twopeakcurvatures(k,:));
+        avgPostureCurvature=mean(postureCurvatures);
+        plot(avgPostureCurvature,'LineWidth',4,'Color','r');
+        postureTitleStr=sprintf('%d Peak Curvature Superposition',i);
+        title(postureTitleStr);
+    end
 end
-title('Two Peak Curvature Superposition');
-
-figure;
-hold on;
-for k=1:size(threepeakcurvatures,1)
-    plot(1:100, threepeakcurvatures(k,:));
-end
-title('Three Peak Curvature Superposition');
-
-figure;
-hold on;
-for k=1:size(fourpeakcurvatures,1)
-    plot(1:100, fourpeakcurvatures(k,:));
-end
-title('Four Peak Curvature Superposition');
-
-figure;
-hold on;
-for k=1:size(fivepeakcurvatures,1)
-    plot(1:100, fivepeakcurvatures(k,:));
-end
-title('Five Peak Curvature Superposition');
-
-figure;
-hold on;
-for k=1:size(sixpeakcurvatures,1)
-    plot(1:100, sixpeakcurvatures(k,:));
-end
-title('Six Peak Curvature Superposition');
-
-figure;
-hold on;
-for k=1:size(sevenpeakcurvatures,1)
-    plot(1:100, sevenpeakcurvatures(k,:));
-end
-title('Seven Peak Curvature Superposition');
 
 end
