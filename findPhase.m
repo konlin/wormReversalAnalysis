@@ -1,14 +1,29 @@
-%find a bunch of phase shifts given a CRA
+%find the phase of a worm by taking the curvature, extending it, then doing
+%a fourier transform and picking the highest frequency mode
 %Konlin Shen
 %6/10/13
 
 function [phaseArray,waveMatrix,constructedWave]=findPhase(cra)
 craSize=length(cra);
+filteredCurvatureArray=[];
 phaseArray=[];
 
-for i=1:craSize
-    reverseFrame=cra(i).WormVid(1);
-    curvature=generateCurvature(reverseFrame);
+%first filter the CRA for unreasonably large curvatures
+for index=1:craSize
+    reverseFrame=cra(index).WormVid(1);
+    c=generateCurvature(reverseFrame);
+    
+    maxCurv=max(max(c));
+    
+    if maxCurv<2*pi
+        filteredCurvatureArray=[filteredCurvatureArray,curvature];
+    end
+end
+
+fcraSize=length(filteredCurvatureArray);
+
+for i=1:fcraSize
+    curvature=filteredCurvatureArray(i);
     
     waveMatrix=NaN(100,200);
     
