@@ -3,7 +3,7 @@
 %Konlin Shen
 %6/10/13
 
-function [phaseArray,waveMatrix,constructedWave]=findPhase(cra)
+function phaseArray=findPhase(cra)
 craSize=length(cra);
 filteredCurvatureArray=[];
 phaseArray=[];
@@ -13,45 +13,47 @@ for index=1:craSize
     reverseFrame=cra(index).WormVid(1);
     c=generateCurvature(reverseFrame);
     
-    maxCurv=max(max(c));
+    maxCurv=max(abs(c));
     
     if maxCurv<2*pi
-        filteredCurvatureArray=[filteredCurvatureArray,curvature];
+        filteredCurvatureArray=[filteredCurvatureArray,c];
     end
 end
 
-fcraSize=length(filteredCurvatureArray);
+fcraSize=size(filteredCurvatureArray,2)
 
 for i=1:fcraSize
-    curvature=filteredCurvatureArray(i);
+    curvature=filteredCurvatureArray(:,1);
     
-    waveMatrix=NaN(100,200);
-    
-    for j=1:100
-        waveMatrix(j,j:j+99)=curvature;
-    end
-    
-    constructedWave=zeros(1,200);
-    
-    for col=1:200
-        count=0;
-        colTotal=0;
-        for row=1:100
-           if(~isnan(waveMatrix(row,col))) 
-                colTotal=colTotal+waveMatrix(row,col);
-                count=count+1;
-           end
-        end
-        constructedWave(col)=colTotal/count;
-    end
-    constructedWave(isnan(constructedWave))=[];
+%     waveMatrix=NaN(100,200);
+%     
+%     for j=1:100
+%         waveMatrix(j,j:j+99)=curvature;
+%     end
+%     
+%     constructedWave=zeros(1,200);
+%     
+%     for col=1:200
+%         count=0;
+%         colTotal=0;
+%         for row=1:100
+%            if(~isnan(waveMatrix(row,col))) 
+%                 colTotal=colTotal+waveMatrix(row,col);
+%                 count=count+1;
+%            end
+%         end
+%         constructedWave(col)=colTotal/count;
+%     end
+%     constructedWave(isnan(constructedWave))=[];
+
+    constructedWave=curvature;
 %     figure;
 %     plot(constructedWave)
-
+       
     Fs = 1; %sample rate is one sampe / percent body length
     D = 1/Fs; %1 percent body length
     L = length(constructedWave); %number of samples total
-%     l = (1:L)*D; % x axis of the input curve (units sample)
+    l = (1:L)*D; % x axis of the input curve (units sample)
 %     figure;
 %     hold on;
 %     ax2(1)=subplot(2,1,1);
@@ -71,7 +73,7 @@ for i=1:fcraSize
         [maxVal, maxInd]=max(abs(Y));
     end
     freq = f(maxInd) * 100 %cycle per body length
-    
+%     
 %     text(f(maxInd), 2*maxVal,['Max=',num2str(freq)],...
 %         'VerticalAlignment','Bottom',...
 %         'HorizontalAlignment','Left',...
