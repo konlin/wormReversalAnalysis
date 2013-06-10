@@ -4,7 +4,7 @@
 
 function [segArrays,curvatures,peaknumbers,curvatureCell]=curvatureSuperposition(cra)
 craSize=length(cra);
-segArrays=zeros(5,craSize);
+segArrays=NaN(5,craSize);
 curvatures=[];
 curvatureCell={};
 peaknumbers=[];
@@ -33,6 +33,9 @@ for i=1:craSize
             seg=mean(curvature((j-1)*10+1:j*20));
             segArrays(j,i)=seg;
         else
+            %if the curvature is unreasonable, make the entire curvature
+            %NaN
+            segArrays(:,i)=NaN;
             plotFlag=false;
             break;
         end
@@ -59,6 +62,8 @@ averageCurvature=mean(curvatures);
 plot(averageCurvature,'LineWidth',4,'color','r');
 
 %plot histograms for all the segments
+%first remove the NaN columns
+segArrays(:,all(isnan(segArrays),1))=[];
 figure;
 for segIndex=1:5
     subplot(3,2,segIndex);
