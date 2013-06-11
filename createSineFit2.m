@@ -10,7 +10,7 @@ figure;
 hold on;
 plot(c, '-r');
 plot(myfun(x,xdata), '-g'); 
-%title(['Frame ', num2str(index), ' out of ',num2str(numFrames)]);
+title('Click to accept, press any key to reject');
 hold off;
 k=waitforbuttonpress;
 if k==1
