@@ -2,9 +2,9 @@
 %Konlin Shen
 %06/11/13
 
-function segmentCorrelationCell=calciumImagingCrossCorr(dbd,vbd)
+function segmentCorrelationCell=calciumImagingCrossCorr(dbd,vbd,wormVelocity)
 segmentCorrelationCell=cell(5);
-
+fps=10;
 timeLength=size(dbd,1);
 
 for t=1:timeLength
@@ -15,11 +15,22 @@ for t=1:timeLength
 end
 
 for seg=1:5
-    segmentCorrelationCell{seg}=xcorr(dSegArray(:,seg),vSegArray(:,seg));
+    [correlationSequence,lags]=xcov(dSegArray(:,seg),vSegArray(:,seg),60,'coeff');
+    segmentCorrelationCell{seg}=correlationSequence;
     figure;
-    plot(segmentCorrelationCell{seg});
+    subplot(2,1,1);
+    hold on;
+    plot(dSegArray(:,seg));
+    plot(vSegArray(:,seg),'r');
+    titlestr=sprintf('Ventral and Dorsal Avg Segment Intensity for Segment %d', seg);
+    title(titlestr);
+    xlabel('Time(frames)');
+    hold off;
+    
+    subplot(2,1,2);
+    plot(lags, correlationSequence);
     str=sprintf('Ventral Dorsal Cross Correlation for Segment %d',seg);
     title(str);
-    xlabel('Time (frames)');
+    xlabel('Time(seconds)');
 end
 end
