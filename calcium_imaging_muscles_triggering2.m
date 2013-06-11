@@ -4,7 +4,7 @@
 % %March 2013
 
 function [ventral_brightness_data_filtered, dorsal_brightness_data_filtered...
-    ,curvdatafiltered]=calcium_imaging_muscles_triggering2(varargin)
+    ,curvdatafiltered, wormVelocity]=calcium_imaging_muscles_triggering2(varargin)
     
     button = length(questdlg('Load new data?','','Yes (TIF)','Yes (MAT) ','No', 'Yes (TIF)') ) ;
     
@@ -115,7 +115,7 @@ function [ventral_brightness_data_filtered, dorsal_brightness_data_filtered...
         corr_data_average = -ones(numcurvpts,3);
 
         if j==1
-            figure (1); imagesc(rb); colormap(gray); axis off; hold on;
+            h=figure; imagesc(rb); colormap(gray); axis off; hold on;
             text(10,20, 'select ROI for background intensity estimate', 'Color', 'white');
             [cropx1_bkg cropy1_bkg] = ginput(1);
             cropx1_bkg= floor(cropx1_bkg);
@@ -175,7 +175,7 @@ function [ventral_brightness_data_filtered, dorsal_brightness_data_filtered...
 
         %ratio_cross=ratio(cropy1:cropy2,cropx1:cropx2);
 
-        figure (1), hold off
+        figure(h);hold off;
         imagesc(rb); colormap(gray); axis equal; axis off; hold on;
 
         text(10,10,num2str(j+istart-1),'Color', 'white');
@@ -311,7 +311,7 @@ function [ventral_brightness_data_filtered, dorsal_brightness_data_filtered...
 
 
 
-        figure(1);
+        figure(h);
         plot(path1_rescaled(1,2),path1_rescaled(1,1), 'or'); hold on;
         plot(path2_rescaled(end,2),path2_rescaled(end,1), 'oy'); hold on;
     %  
@@ -365,7 +365,7 @@ function [ventral_brightness_data_filtered, dorsal_brightness_data_filtered...
         curv = unwrap(diff(atdf2,1)); 
         corr_data(:,1) = curv;     %collect curvature information for midline
 
-        figure (1); hold on; plot(line(:,1),line(:,2),'w.','linewidth',2);
+        figure(h); hold on; plot(line(:,1),line(:,2),'w.','linewidth',2);
         %plot(d_path(:,1),d_path(:,2),'-r','linewidth',2);
         %plot(v_path(:,1),v_path(:,2),'-b','linewidth',2);
 
@@ -464,7 +464,7 @@ function [ventral_brightness_data_filtered, dorsal_brightness_data_filtered...
         corr_data(end,2:3)=corr_data(end-1,2:3);
         corr_data(1,2:3)=corr_data(2,2:3);
 
-        figure (1); hold on;
+        figure(h); hold on;
         plot(corr_pts(:,3), corr_pts(:,4), 'r-','linewidth',2);      %plot dorsal side in red
         plot(corr_pts(:,5), corr_pts(:,6), 'b-','linewidth',2);      %plot ventral side in blue 
 
@@ -577,6 +577,13 @@ function [ventral_brightness_data_filtered, dorsal_brightness_data_filtered...
     [~,revY]=ginput(1);
     hold on;
     plot(1:100, revY, 'LineWidth', 8, 'Color', 'g', 'LineStyle','-');
+    
+    m2=msgbox('Please select start and end points to calculate velocity');
+    uiwait(m2);
+    [xs,ys]=ginput(2);
+    plot(xs, ys, 'LineWidth', 16, 'Color', 'y');
+    wormVelocity=(xs(2)-xs(1))/(ys(2)-ys(1));
+    waitforbuttonpress;
     hold off;
     
     %plot the GC3/RFP ratios
