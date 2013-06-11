@@ -1,5 +1,6 @@
 %find the phase of a worm by taking the curvature, extending it, then doing
-%a fourier transform and picking the highest frequency mode
+%a fourier transform and picking the highest frequency mode...this is not
+%the phase.  lol this is the spatial frequency
 %Konlin Shen
 %6/10/13
 
@@ -7,6 +8,8 @@ function phaseArray=findPhase(cra)
 craSize=length(cra);
 filteredCurvatureArray=[];
 phaseArray=[];
+options=optimset('MaxFunEvals', 100000, 'MaxIter', 100000);
+
 
 %first filter the CRA for unreasonably large curvatures
 for index=1:craSize
@@ -23,7 +26,7 @@ end
 fcraSize=size(filteredCurvatureArray,2)
 
 for i=1:fcraSize
-    curvature=filteredCurvatureArray(:,1);
+    curvature=filteredCurvatureArray(:,i);
     
 %     waveMatrix=NaN(100,200);
 %     
@@ -72,15 +75,21 @@ for i=1:fcraSize
         f(maxInd)=[];
         [maxVal, maxInd]=max(abs(Y));
     end
-    freq = f(maxInd) * 100 %cycle per body length
+    freq = f(maxInd) * 100; %cycle per body length
 %     
 %     text(f(maxInd), 2*maxVal,['Max=',num2str(freq)],...
 %         'VerticalAlignment','Bottom',...
 %         'HorizontalAlignment','Left',...
 %         'FontSize',8)
-%     
     
-    phaseArray=[phaseArray,freq];
+    %perform a best fit for a sine wave:
+    bestFitCurve=createSineFit2(curvature, options);
+    if numel(bestFitCurve)~=0
+        phaseArray=[phaseArray,bestFitCurve(3)];
+    end
 end
 
+figure;
+hist(phaseArray);
+title('Histogram of Phase');
 end

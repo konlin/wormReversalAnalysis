@@ -1,6 +1,6 @@
 function x =createSineFit2(c, options)
-c = c(19:90);
-xdata = [19:90]';
+%c = c(19:90);
+xdata = [1:100]';
 lb = [0; 0; 0];
 ub = [12; .18; 2*pi];
 
@@ -12,6 +12,10 @@ plot(c, '-r');
 plot(myfun(x,xdata), '-g'); 
 %title(['Frame ', num2str(index), ' out of ',num2str(numFrames)]);
 hold off;
+k=waitforbuttonpress;
+if k==1
+    x=[];
+end
 
 close;
 end
