@@ -10,8 +10,8 @@ overlapHist=zeros(1,100);
 
 %make a for loop to run through all the reversals
 for i=1:len
-    vbd=intensityCell{i}{1};
-    dbd=intensityCell{i}{2};
+    vbd=intensityCell{i,1};
+    dbd=intensityCell{i,2};
     %normalize the intensity data
     normalizedVBD=vbd/max(max(vbd));
     normalizedDBD=dbd/max(max(dbd));
