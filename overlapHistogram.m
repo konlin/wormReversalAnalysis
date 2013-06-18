@@ -26,5 +26,5 @@ for i=1:len
     end
 end
 figure;
-hist(overlapHist);
+bar(overlapHist);
 end
