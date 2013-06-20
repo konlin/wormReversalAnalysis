@@ -2,21 +2,24 @@
 %Konlin Shen
 %6/19/13
 
-function reversalDelay(mcdf)
+function delayArray=reversalDelay(mcdf)
+
 numFrames=length(mcdf);
 velocity=getVelocity(mcdf);
+delayArray=[];
 
 for i=1:numFrames-1
     if(velocity(i)<0)
         time=0;
-        tempFrames=numFrames;
+        tempFrames=i+1;
         %look for last time DLP was on
-        while(mcdf(tempFrames+1).DLPisOn==0)
+        while(mcdf(tempFrames).DLPisOn==0)
             time=time+1;
             tempFrames=tempFrames-1;
         end
+        delayArray=[delayArray,time];
     end
 end
 
-
+hist(delayArray);
 end
