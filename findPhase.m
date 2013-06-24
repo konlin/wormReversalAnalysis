@@ -1,6 +1,4 @@
-%find the phase of a worm by taking the curvature, extending it, then doing
-%a fourier transform and picking the highest frequency mode...this is not
-%the phase.  lol this is the spatial frequency
+%find the phase of a worm by taking the curvature
 %Konlin Shen
 %6/10/13
 
