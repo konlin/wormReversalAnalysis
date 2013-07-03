@@ -2,7 +2,7 @@
 %Konlin Shen
 %06/11/13
 
-function segmentCorrelationCell=calciumImagingCrossCorr(dbd,vbd,wormVelocity)
+function segmentCorrelationCell=calciumImagingCrossCorr(vbd,dbd)
 segmentCorrelationCell=cell(5);
 fps=10;
 timeLength=size(dbd,1);
