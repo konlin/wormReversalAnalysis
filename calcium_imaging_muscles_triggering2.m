@@ -4,7 +4,7 @@
 % %March 2013
 
 function [ventral_brightness_data_filtered, dorsal_brightness_data_filtered...
-    ,curvdatafiltered, wormVelocity]=calcium_imaging_muscles_triggering2(varargin)
+    ,curvdatafiltered]=calcium_imaging_muscles_triggering2(varargin)
     
     button = length(questdlg('Load new data?','','Yes (TIF)','Yes (MAT) ','No', 'Yes (TIF)') ) ;
     
@@ -578,14 +578,14 @@ function [ventral_brightness_data_filtered, dorsal_brightness_data_filtered...
     hold on;
     plot(1:100, revY, 'LineWidth', 8, 'Color', 'g', 'LineStyle','-');
     
-    m2=msgbox('Please select start and end points to calculate velocity');
-    uiwait(m2);
-    [xs,ys]=ginput(2);
-    plot(xs, ys, 'LineWidth', 16, 'Color', 'y');
-    wormVelocity=(xs(2)-xs(1))/(ys(2)-ys(1));
-    waitforbuttonpress;
-    hold off;
-    
+%     m2=msgbox('Please select start and end points to calculate velocity');
+%     uiwait(m2);
+%     [xs,ys]=ginput(2);
+%     plot(xs, ys, 'LineWidth', 16, 'Color', 'y');
+%     wormVelocity=(xs(2)-xs(1))/(ys(2)-ys(1));
+%     waitforbuttonpress;
+%     hold off;
+%     
     %plot the GC3/RFP ratios
     %first determine bounds for scaling
     maxVentral=max(max(ventral_brightness_data_filtered));
