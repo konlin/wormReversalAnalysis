@@ -1,4 +1,7 @@
-function x =createSineFit3(c, options)
+%create sine fit 3 is for fitting sine waves to body postures
+
+function x =createSineFit3(c)
+options = optimset('MaxFunEvals', 100000, 'MaxIter', 100000);
 %c = c(19:90);
 xdata = [1:100]';
 lb = [0; 0; 0];

@@ -1,4 +1,5 @@
-function reversalList=findReversals(mcdf, options)
+function reversalList=findReversals(mcdf)
+options = optimset('MaxFunEvals', 100000, 'MaxIter', 100000);
 numFrames=length(mcdf);
 velocity=getVelocity(mcdf);
 startReversalIndex=0;
