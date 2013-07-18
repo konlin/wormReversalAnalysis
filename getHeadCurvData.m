@@ -15,7 +15,7 @@ for i=1:t-1
 end
 
 figure;
-subplot(2,1,1);plot(hcurv,'.');title('head curvature');
-subplot(2,1,2);plot(dhcurv,'.');title('derivative of head curvature');
+subplot(2,1,1);plot(hcurv,'.');title('head angles');
+subplot(2,1,2);plot(dhcurv,'.');title('derivative of head angles');
 
 end

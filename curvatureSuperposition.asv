@@ -19,9 +19,9 @@ for i=1:craSize
     plotFlag=true;
     
     %if the head curvature is negative, flip it for normalization
-%     if((curvature(5)-curvature(10))/(5-10)<0)
-%         curvature=-1*curvature;
-%     end
+    if((curvature(5)-curvature(10))/(5-10)<0)
+        curvature=-1*curvature;
+    end
     
     for j=1:5
         %calculate average curvature for each segment
@@ -63,7 +63,7 @@ plot(averageCurvature,'LineWidth',4,'color','r');
 
 %plot histograms for all the segments
 %first remove the NaN columns
-segArrays(:,all(isnan(segArrays),1))=[];
+for col=1:craSize
 figure;
 for segIndex=1:5
     subplot(3,2,segIndex);

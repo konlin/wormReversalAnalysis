@@ -3,7 +3,7 @@
 %Konlin Shen
 %7/18/13
 
-function velocity=getVelFromCalcium(fps, curvdata)
+function velocity_smoothed=getVelFromCalcium(fps, curvdata)
 
 spf=1/fps;
 tstamp=(0:1:size(curvdata,1)-1)*spf;
@@ -13,7 +13,10 @@ length(ps)
 length(tstamp)
 
 
-velocity= -ps./(100*diff(tstamp));
+velocity_raw= -ps./(100*diff(tstamp));
+
+%apply a cubic spline
+velocity_smoothed=csaps(1:1:length(velocity_raw),velocity_raw,0.55);
 
 end
 

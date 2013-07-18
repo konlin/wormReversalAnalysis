@@ -555,19 +555,6 @@ function [ventral_brightness_data_filtered, dorsal_brightness_data_filtered...
     curvdatafiltered = imfilter(curvdata*100,  h , 'replicate');
     ventral_brightness_data_filtered = imfilter(ventral_brightness_data, h, 'replicate');
     dorsal_brightness_data_filtered = imfilter(dorsal_brightness_data, h, 'replicate');
-    
-    %calculate the velocity
-    velocity=getVelFromCalcium(fps, curvdata);
-    points=fnplt(velocity);
-    xs=points(1,:); ys=points(2,:);
-    figure; plot(xs,ys);
-    
-    for i=1:length(ys)
-        if(i~=1 && ys(i)<0 && ys(i-1)<0)
-            reversalStart=i-1;
-            break;
-        end
-    end
 
     %plot the curvature diagram
     figure; 
@@ -585,11 +572,11 @@ function [ventral_brightness_data_filtered, dorsal_brightness_data_filtered...
 
     xlabel('fractional distance along the centerline (head=0; tail=1)');
     ylabel('time (s)');
-%     m=msgbox('Please select origin of reversal');
-%     uiwait(m);
-%     [~,revY]=ginput(1);
+    m=msgbox('Please select origin of reversal');
+    uiwait(m);
+    [~,revY]=ginput(1);
     hold on;
-    plot(1:100, reversalStart, 'LineWidth', 100, 'Color', 'g', 'LineStyle','-');
+    plot(1:100, revY, 'LineWidth', 8, 'Color', 'g', 'LineStyle','-');
     
 %     m2=msgbox('Please select start and end points to calculate velocity');
 %     uiwait(m2);
@@ -648,8 +635,7 @@ function [ventral_brightness_data_filtered, dorsal_brightness_data_filtered...
     ylabel('time (s)'); 
     
     hold on;
-    plot(1:100, reversalStart, 'LineWidth', 8, 'Color', 'm', 'LineStyle','-');
-
+    plot(1:100, revY, 'LineWidth', 8, 'Color', 'm', 'LineStyle','-');
 
     if length(questdlg('Save this data? '))==3
         [fn savepathname]= uiputfile('*.mat', 'choose file to save', strcat(fname, '_',num2str(istart),'-',num2str(iend),'.mat'));
@@ -660,9 +646,8 @@ function [ventral_brightness_data_filtered, dorsal_brightness_data_filtered...
     end
     
     getHeadCurvData(angle_data);
-    headCrossCov(ventral_brightness_data_filtered,dorsal_brightness_data_filtered,reversalStart);
-
-
-    
+    headCrossCov(ventral_brightness_data_filtered,dorsal_brightness_data_filtered,round(revY));
+    velocity=getVelFromCalcium(fps, curvdata);
+    figure; points=fnplt(velocity);
 end
 

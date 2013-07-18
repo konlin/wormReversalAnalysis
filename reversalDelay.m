@@ -1,37 +1,43 @@
-%analyzes the delay between reveresal initiations with respect to phase
+%analyzes the delay between reversal initiations with respect to phase
 %Konlin Shen
 %6/19/13
 
-function delayArray=reversalDelay(mcdf)
+function [cra,delayArray]=reversalDelay(mcdf)
 
 numFrames=length(mcdf);
-velocity=getVelocity(mcdf);
-delayArray=[];
-currentReversal=false;
+options=optimset('MaxFunEvals', 100000, 'MaxIter', 100000);
+reversalArray=findReversals(mcdf, options);
+cra=cleanReversalData(reversalArray);
 
-for i=1:numFrames-1
-    if(velocity(i)<0 && currentReversal==false)
-        currentReversal=true;
-        time=0;
-        tempFrames=i+1;
-        
-        %find the first frame in which the DLP is on
-        while (mcdf(tempFrames).DLPisOn+mcdf(tempFrames-1).DLPisOn)~=1
-            time=time+1;
-            tempFrames=tempFrames-1;
-            if(tempFrames==0)
-                break;
-            end
-        end
-        delayArray=[delayArray,time];
-    elseif velocity(i)>0
-        currentReversal=false;
+numReversals=length(cra);
+velocity=getVelocity(mcdf);
+for i=1:length(mcdf)
+    DLParray(i)=mcdf(i).DLPisOn;
+end
+
+delayArray=[];
+
+for i=1:numReversals
+    currentReversal=cra(i);
+    firstFrame=find([mcdf.FrameNumber]==currentReversal.WormVid(1).FrameNumber);
+    searchIndex=firstFrame-1;
+    time=0;
+    while(searchIndex~=1)
+      if(mcdf(searchIndex).DLPisOn+mcdf(searchIndex-1).DLPisOn~=1)
+          searchIndex=searchIndex-1;
+          time=time+1;
+      else
+          break;
+      end
     end
+    
+
+    delayArray=[delayArray,time];
 end
 % %normalize
 % maxDelay=max(max(delayArray));
 % normalizedDelayArray=delayArray/maxDelay;
 
 figure;
-hist(normalizedDelayArray,40);
+hist(delayArray,40);
 end

@@ -88,6 +88,6 @@ for i=1:fcraSize
 end
 
 figure;
-hist(phaseArray);
+hist(phaseArray,15);
 title('Histogram of Phase');
 end

@@ -4,7 +4,7 @@
 
 function segmentCorrelationCell=calciumImagingCrossCorr(vbd,dbd)
 segmentCorrelationCell=cell(5);
-fps=10;
+
 timeLength=size(dbd,1);
 
 for t=1:timeLength

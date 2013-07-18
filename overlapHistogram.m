@@ -1,4 +1,4 @@
-% overlap histogram
+% overlap bar graph.  it is not that revealing :(
 % Konlin Shen
 % 6/18/13
 
@@ -19,7 +19,7 @@ for i=1:len
     time=size(normalizedVBD,1);
     for t=1:time
         for s=1:100
-            if(normalizedVBD(t,s)>0.5 && normalizedDBD(t,s)>0.5)
+            if(normalizedVBD(t,s)>0.45 && normalizedDBD(t,s)>0.6)
                 overlapHist(s)=overlapHist(s)+1;
             end
         end

@@ -45,7 +45,7 @@ classdef WormReverse
           numFrames=endframe-startframe+1;
           for k=1:numFrames
               c=generateCurvature(mcdf(k+startframe-1));
-              x=createSineFit3(c,options);
+              x=createSineFit3(c);
               amplitudeArray(k)=x(1);
               frequencyArray(k)=x(2);
               phaseArray(k)=x(3);
