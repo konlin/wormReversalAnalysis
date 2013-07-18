@@ -4,7 +4,7 @@
 % %March 2013
 
 function [ventral_brightness_data_filtered, dorsal_brightness_data_filtered...
-    ,curvdatafiltered]=calcium_imaging_muscles_triggering2(varargin)
+    ,curvdatafiltered, angle_data, revY, velocity]=calcium_imaging_muscles_triggering2(varargin)
     
     button = length(questdlg('Load new data?','','Yes (TIF)','Yes (MAT) ','No', 'Yes (TIF)') ) ;
     
@@ -644,6 +644,10 @@ function [ventral_brightness_data_filtered, dorsal_brightness_data_filtered...
             save(fnamemat);
         end
     end
-        
+    
+    getHeadCurvData(angle_data);
+    headCrossCov(ventral_brightness_data_filtered,dorsal_brightness_data_filtered,round(revY));
+    velocity=getVelFromCalcium(fps, curvdata);
+    figure; plot(velocity);
 end
 
